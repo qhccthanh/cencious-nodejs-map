@@ -129,6 +129,15 @@
         });
     });
 
+    app.get('/HelloWorld.html', function(req, res, next) {
+        res.sendFile(__dirname + '/Apps/HelloWorld.html');
+    });
+
+    app.get('/OSMBuilding.html', function(req, res, next) {
+        res.sendFile(path.join(__dirname + '/Apps/OSMBuilding.html'));
+    });
+
+
     var server = app.listen(argv.port, argv.public ? undefined : 'localhost', function() {
         if (argv.public) {
             console.log('Cesium development server running publicly.  Connect to http://localhost:%d/', server.address().port);
