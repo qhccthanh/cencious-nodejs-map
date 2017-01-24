@@ -15,6 +15,7 @@
             'description' : 'Port to listen on.'
         },
         'public' : {
+            'default': true,
             'type' : 'boolean',
             'description' : 'Run a public server that listens on all interfaces.'
         },
@@ -31,6 +32,7 @@
         }
     });
     var argv = yargs.argv;
+    console.log("ARGV: %s", argv.public);
 
     if (argv.help) {
         return yargs.showHelp();
