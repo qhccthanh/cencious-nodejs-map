@@ -28,12 +28,19 @@
     url : 'https://a.tile.openstreetmap.org/'
   });
 
-  var viewer = new Cesium.Viewer('cesiumContainer');
-  var layers = viewer.imageryLayers;
-
   // Mapbox api url
 
   var url = 'https://api.mapbox.com/styles/v1/qhcthanh/ciy84eryo002d2rl9y3fqznkc/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoicWhjdGhhbmgiLCJhIjoiY2l5N2lnNmltMDA2ajMyb3h5azc0OW91dSJ9.7EagjkvmpnuRoxc-OBgR7g'
+//  url = "'https://a.tile.openstreetmap.org'";
+
+  var viewer = new Cesium.Viewer('cesiumContainer',{
+    baseLayerPicker : false,
+    imageryProvider: new Cesium.createOpenStreetMapImageryProvider({
+      url : 'https://a.tile.openstreetmap.org/'
+    })
+  });
+
+  var layers = viewer.imageryLayers;
 
   var customImageryProvider = new Cesium.UrlTemplateImageryProvider({
     url : url
@@ -41,6 +48,8 @@
   layers.addImageryProvider(customImageryProvider);
 
   var scene = viewer.scene;
+
+  scene.globe.tileCacheSize = 500;
 
   var canvas = viewer.canvas;
   var camera = scene.camera;
@@ -56,7 +65,7 @@
       latitude:  10.7625102,
       longitude: 106.6827251
     },
-    zoom: 500.0
+    zoom: 50.0
   };
 
   // Create callback for browser's geolocation
@@ -66,7 +75,7 @@
       heading = Cesium.Math.toRadians(30.0);
     }
     if (pitch == null) {
-      pitch = Cesium.Math.toRadians(-10.0);
+      pitch = Cesium.Math.toRadians(-12.0);
     }
 
     var range = 700.0;
@@ -108,85 +117,84 @@
   // Ask browser for location, and fly there.
   //navigator.geolocation.getCurrentPosition(fly);
 
-  scene.screenSpaceCameraController.enableRotate = false;
-  scene.screenSpaceCameraController.enableTranslate = false;
-  scene.screenSpaceCameraController.enableZoom = false;
-  scene.screenSpaceCameraController.enableTilt = false;
-  scene.screenSpaceCameraController.enableLook = false;
-
-  var currentHeading = 0;
-
-  var startMousePosition;
-  var mousePosition;
-  var flags = {
-    looking : false,
-    moveForward : false,
-    moveBackward : false,
-    moveUp : false,
-    moveDown : false,
-    moveLeft : false,
-    moveRight : false
-  };
-
-  var handler = new Cesium.ScreenSpaceEventHandler(canvas);
-
-  handler.setInputAction(function(movement) {
-    flags.looking = true;
-    mousePosition = startMousePosition = Cesium.Cartesian3.clone(movement.position);
-  }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
-
-  handler.setInputAction(function(movement) {
-    mousePosition = movement.endPosition;
-  }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-
-  handler.setInputAction(function(movement) {
-    mousePosition = movement.endPosition;
-    flags.looking = false;
-  }, Cesium.ScreenSpaceEventType.LEFT_UP);
-
-  handler.setInputAction(function(movement) {
-    console.log("PINCH_START");
-    console.log(movement);
-  }, Cesium.ScreenSpaceEventType.PINCH_START);
-
-  handler.setInputAction(function(movement) {
-    console.log("PINCH_MOVE");
-    console.log(movement);
-  }, Cesium.ScreenSpaceEventType.PINCH_MOVE);
-
-  handler.setInputAction(function(movement) {
-    console.log("PINCH_END");
-    console.log(movement);
-  }, Cesium.ScreenSpaceEventType.PINCH_END);
-
-  viewer.clock.onTick.addEventListener(function(clock) {
-    var camera = viewer.camera;
-
-    if (flags.looking) {
-      var width = canvas.clientWidth;
-      var height = canvas.clientHeight;
-
-      // Coordinate (0.0, 0.0) will be where the mouse was clicked.
-      var x = (mousePosition.x - startMousePosition.x) / width;
-      if (mousePosition.x - startMousePosition.x < 0 ) {
-        currentHeading += 10;
-      } else {
-        currentHeading -= 10;
-      }
-
-
-      fly(startPosition,Cesium.Math.toRadians(currentHeading));
-
-    }
-
-    // Change movement speed based on the distance of the camera to the surface of the ellipsoid.
-    var ellipsoid = scene.globe.ellipsoid;
-    var cameraHeight = ellipsoid.cartesianToCartographic(camera.position).height;
-    var moveRate = cameraHeight / 100.0;
-
-
-
-  });
+//  scene.screenSpaceCameraController.enableRotate = false;
+//  scene.screenSpaceCameraController.enableTranslate = false;
+//  scene.screenSpaceCameraController.enableZoom = false;
+//  scene.screenSpaceCameraController.enableTilt = false;
+//  scene.screenSpaceCameraController.enableLook = false;
+//
+//  var currentHeading = 0;
+//
+//  var startMousePosition;
+//  var mousePosition;
+//  var flags = {
+//    looking : false,
+//    moveForward : false,
+//    moveBackward : false,
+//    moveUp : false,
+//    moveDown : false,
+//    moveLeft : false,
+//    moveRight : false
+//  };
+//
+//  var handler = new Cesium.ScreenSpaceEventHandler(canvas);
+//
+//  handler.setInputAction(function(movement) {
+//    flags.looking = true;
+//    mousePosition = startMousePosition = Cesium.Cartesian3.clone(movement.position);
+//  }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+//
+//  handler.setInputAction(function(movement) {
+//    mousePosition = movement.endPosition;
+//  }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+//
+//  handler.setInputAction(function(movement) {
+//    mousePosition = movement.endPosition;
+//    flags.looking = false;
+//  }, Cesium.ScreenSpaceEventType.LEFT_UP);
+//
+//  handler.setInputAction(function(movement) {
+//    console.log("PINCH_START");
+//    console.log(movement);
+//  }, Cesium.ScreenSpaceEventType.PINCH_START);
+//
+//  handler.setInputAction(function(movement) {
+//    console.log("PINCH_MOVE");
+//    console.log(movement);
+//  }, Cesium.ScreenSpaceEventType.PINCH_MOVE);
+//
+//  handler.setInputAction(function(movement) {
+//    console.log("PINCH_END");
+//    console.log(movement);
+//  }, Cesium.ScreenSpaceEventType.PINCH_END);
+//
+//  viewer.clock.onTick.addEventListener(function(clock) {
+//    var camera = viewer.camera;
+//
+//    if (flags.looking) {
+//      var width = canvas.clientWidth;
+//      var height = canvas.clientHeight;
+//
+//      // Coordinate (0.0, 0.0) will be where the mouse was clicked.
+//      var x = (mousePosition.x - startMousePosition.x) / width;
+//      if (mousePosition.x - startMousePosition.x < 0 ) {
+//        currentHeading += 5;
+//      } else {
+//        currentHeading -= 5;
+//      }
+//
+//
+//      fly(startPosition,Cesium.Math.toRadians(currentHeading));
+//    }
+//
+//    // Change movement speed based on the distance of the camera to the surface of the ellipsoid.
+//    var ellipsoid = scene.globe.ellipsoid;
+//    var cameraHeight = ellipsoid.cartesianToCartographic(camera.position).height;
+//    var moveRate = cameraHeight / 100.0;
+//
+//
+//
+//  });
 
 </script>
 </body>
